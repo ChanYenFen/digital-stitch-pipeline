@@ -1,4 +1,4 @@
-# Digital_Embroidery_Pipeline
+# digital-embroidery-pipeline
 
 Author: Yen-Fen Chan
 
