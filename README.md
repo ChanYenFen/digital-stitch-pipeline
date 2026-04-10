@@ -2,7 +2,7 @@
 
 Author: Yen-Fen Chan
 
-The project is a Python-based translation and optimization digital pipeline for computational embroidery.
+The project is a Python-based translation and optimization digital pipeline for computational design in embroidery.
 
 ## Installation
 
