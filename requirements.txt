@@ -1,1 +1,1 @@
-# Add Python dependencies here
+pyembroidery>=1.5.1

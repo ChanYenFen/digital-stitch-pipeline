@@ -6,6 +6,9 @@ A computational-design pipeline built for Rhino + Grasshopper that turns embroid
 curve designs into machine-ready `.DST` files — covering stitch pattern generation, path
 optimization, and export in one workflow.
 
+**Requires Rhino 8** — the pipeline runs inside Rhino's Grasshopper environment and won't run
+standalone with just Python.
+
 ## Highlights
 
 - **Pattern generation** — turns guide curves into stitch patterns (zigzag, cross, decorative,
@@ -58,3 +61,9 @@ This project follows a standardized folder layout for Rhino + Grasshopper Python
 
 - `requirements.txt`  
   Lists Python dependencies for external IDE environment setup.
+
+## License
+
+See [LICENSE](LICENSE) for this project's license. This project also vendors
+[nanoflann](https://github.com/jlblancoc/nanoflann) (BSD 2-Clause) in
+`src/script/native/`; see [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md) for its full license text.
