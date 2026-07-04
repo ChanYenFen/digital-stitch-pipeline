@@ -1,17 +1,25 @@
 import os
+import platform
 import ctypes
 
 _DLL = None  # cached handle so the DLL loads only once per session
 
+_LIB_NAMES = {
+    "Windows": "curve_sort.dll",
+    "Darwin":  "curve_sort.dylib",
+    "Linux":   "curve_sort.so",
+}
+
 
 def load_dll():
-    """Load curve_sort.dll (once) and declare the sort_curves signature."""
+    """Load curve_sort's native library (once) and declare the sort_curves signature."""
     global _DLL
     if _DLL is not None:
         return _DLL
 
     here = os.path.dirname(os.path.abspath(__file__))
-    dll_path = os.path.join(here, "native", "curve_sort.dll")
+    lib_name = _LIB_NAMES[platform.system()]
+    dll_path = os.path.join(here, "native", lib_name)
     lib = ctypes.CDLL(dll_path)
 
     # void sort_curves(const double*, int, const double*, int, int, int, int*, int*)

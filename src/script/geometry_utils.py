@@ -5,7 +5,7 @@ Focus: Geometric path sorting for embroidery and CNC toolpaths.
 
 __author__ = "Yen-Fen Chan"
 __date__ = "2026.03.05"
-__update__ = "2026.07.02"
+__update__ = "2026.07.04"
 
 import ctypes
 
@@ -13,6 +13,9 @@ import Rhino.Geometry as rg
 import ghpythonlib.treehelpers as th
 
 import misc
+
+# from _reload import unload_modules
+# unload_modules("native_bridge")
 import native_bridge
 
 

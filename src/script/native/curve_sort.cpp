@@ -66,8 +66,13 @@ static inline int entry_point(int curve, int rev) { return rev ? curve * 2 + 1 :
 static inline int exit_point (int curve, int rev) { return rev ? curve * 2     : curve * 2 + 1; }
 
 
-// Export macro: tells MSVC to make this function callable from outside the DLL.
-#define DLL_EXPORT __declspec(dllexport)
+// Export macro: makes this function callable from outside the shared library
+// (MSVC's __declspec(dllexport) on Windows, GCC/Clang's visibility attribute elsewhere).
+#if defined(_WIN32)
+    #define DLL_EXPORT __declspec(dllexport)
+#else
+    #define DLL_EXPORT __attribute__((visibility("default")))
+#endif
 
 // extern "C" disables C++ name mangling so ctypes can find the symbol by name.
 extern "C" {
