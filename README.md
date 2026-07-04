@@ -2,7 +2,19 @@
 
 Author: Yen-Fen Chan
 
-The project is a Python-based translation and optimization digital pipeline for computational design in embroidery.
+A computational-design pipeline built for Rhino + Grasshopper that turns embroidery/cable-stitch
+curve designs into machine-ready `.DST` files — covering stitch pattern generation, path
+optimization, and export in one workflow.
+
+## Highlights
+
+- **Pattern generation** — turns guide curves into stitch patterns (zigzag, cross, decorative,
+  arrow, feather) automatically.
+- **Fast path optimization** — a custom C++ engine (k-d tree + greedy/2-opt search) sorts the
+  stitch path to minimize travel, handling 3000+ curves in real time — far beyond what the
+  pure-Python fallback can do.
+- **Machine-ready export** — one step to `.DST` (the industry-standard embroidery format), with
+  tie-stitches, jump-thread handling, and cable color-change logic built in, plus a CSV log for QA.
 
 ## Installation
 
@@ -37,7 +49,8 @@ This project follows a standardized folder layout for Rhino + Grasshopper Python
   Outputs generated from scripts or Grasshopper definitions, such as renderings and log files.
 
 - `src/`  
-  Source code including GH Python scripts (.py), reusable logic, and external language components.
+  Source code: Grasshopper Python components (`src/script/`), the Grasshopper definition
+  (`src/gh/`), and a native C++ path-sorting engine (`src/script/native/`) for large designs.
 
 - `.github/`  
   GitHub-specific automation (e.g., Actions, issue templates).  

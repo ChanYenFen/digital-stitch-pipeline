@@ -1,0 +1,7 @@
+# C++ build artifacts (curve_sort.dll is kept; these are MSVC intermediates)
+src/script/native/*.obj
+src/script/native/*.lib
+src/script/native/*.exp
+
+# Rhino history/lock files
+*.rhl
