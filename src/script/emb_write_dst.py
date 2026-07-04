@@ -12,7 +12,7 @@ import math
 import pyembroidery
 print(pyembroidery.__file__)
 
-from misc import unload_modules
+from _reload import unload_modules
 unload_modules("emb_constants")
 from emb_constants import*
 

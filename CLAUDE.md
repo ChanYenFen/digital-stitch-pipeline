@@ -19,8 +19,8 @@ Names like `curves_tree`, `native_sort`, `if_flip`, `pts_nested`, `export`, `in_
 `Rhino.Geometry`/`ghpythonlib` only exist inside Rhino, so there's no way to run or test this code,
 and no lint/build/test command in the repo. `requirements.txt` only covers external-IDE code reading.
 
-`misc.unload_modules()` force-unloads modules by prefix so GH re-reads edits without restarting Rhino
-(see the `unload_modules("emb_constants")` calls atop `emb_prepro.py`/`emb_write_dst.py`).
+`_reload.unload_modules()` force-unloads modules by prefix so GH re-reads edits without restarting
+Rhino (see the `unload_modules("emb_constants")` calls atop `emb_prepro.py`/`emb_write_dst.py`).
 
 ## Pipeline stages (src/script/)
 
@@ -44,16 +44,19 @@ and no lint/build/test command in the repo. `requirements.txt` only covers exter
 
 - `sort_curves_by_rtree` — pure Python, `Rhino.Geometry.RTree`.
 - `sort_curves_native` — same algorithm via `ctypes` into `curve_sort.dll`; adds `knn_k` and
-  `if_flip`. `misc.py` marshals curves to a flat `[sx,sy,sz,ex,ey,ez,...]` double buffer and
-  rebuilds `Rhino.Geometry.Curve` objects from the returned order/reversal arrays.
+  `if_flip`. `native_bridge.py` owns loading the DLL and declaring the `ctypes` signature
+  (cached in a module-level handle); `misc.py` marshals curves to a flat
+  `[sx,sy,sz,ex,ey,ez,...]` double buffer and rebuilds `Rhino.Geometry.Curve` objects from the
+  returned order/reversal arrays.
 
 Boundary contract: only flat coordinate/index arrays cross the ctypes boundary, never geometry
 objects. `if_flip=False` fixes direction (head→tail only): reversal stays all-zero and 2-opt is
 skipped, since reversing a sub-sequence would flip curve directions.
 
-The `.dll`/`.lib`/`.exp`/`.obj` in `src/script/native/` are prebuilt (MSVC, `__declspec(dllexport)` +
-`extern "C"`) and checked in as binaries — there's no in-repo build script; rebuild with `cl.exe`
-against `nanoflann.hpp` if `curve_sort.cpp` changes.
+`curve_sort.dll` in `src/script/native/` is prebuilt (MSVC, `__declspec(dllexport)` + `extern "C"`)
+and checked in as a binary — there's no in-repo build script; rebuild with `cl.exe` against
+`nanoflann.hpp` if `curve_sort.cpp` changes. The `.obj`/`.lib`/`.exp` link intermediates are
+gitignored (see `.gitignore`), not tracked.
 
 ## Repo layout
 
@@ -61,3 +64,5 @@ against `nanoflann.hpp` if `curve_sort.cpp` changes.
 - `data/` — pipeline outputs (`csv/`, `dst/`).
 - `src/gh/` — Grasshopper `.gh` definitions.
 - `src/script/` — Python pipeline stages, plus `native/` for the C++ sort backend.
+  `_reload.py` (GH module-reload helper) and `native_bridge.py` (DLL loading/ctypes signature)
+  are small supporting modules split out of `misc.py`/`geometry_utils.py`.

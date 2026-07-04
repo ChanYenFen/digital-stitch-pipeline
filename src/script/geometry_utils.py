@@ -7,13 +7,13 @@ __author__ = "Yen-Fen Chan"
 __date__ = "2026.03.05"
 __update__ = "2026.07.02"
 
-import os
 import ctypes
 
 import Rhino.Geometry as rg
 import ghpythonlib.treehelpers as th
 
 import misc
+import native_bridge
 
 
 def _get_entry_exit(curve, rev):
@@ -202,37 +202,8 @@ def sort_curves_by_rtree(curves, start_pt=rg.Point3d(0, 0, 0), use_two_opt=False
 # ===========================================================================
 # Native (C++) backend: same greedy + 2-opt, sorted in curve_sort.dll.
 # Drop-in replacement for sort_curves_by_rtree with an added knn_k parameter.
+# DLL loading / ctypes signature binding lives in native_bridge.py.
 # ===========================================================================
-
-_DLL = None  # cached handle so the DLL loads only once per session
-
-
-def _load_dll():
-    """Load curve_sort.dll (once) and declare the sort_curves signature."""
-    global _DLL
-    if _DLL is not None:
-        return _DLL
-
-    here = os.path.dirname(os.path.abspath(__file__))
-    dll_path = os.path.join(here, "native", "curve_sort.dll")
-    lib = ctypes.CDLL(dll_path)
-
-    # void sort_curves(const double*, int, const double*, int, int, int, int*, int*)
-    lib.sort_curves.argtypes = [
-        ctypes.POINTER(ctypes.c_double),  # endpoints (6*n)
-        ctypes.c_int,                     # n
-        ctypes.POINTER(ctypes.c_double),  # start_pt (3)
-        ctypes.c_int,                     # use_two_opt
-        ctypes.c_int,                     # two_opt_max_passes
-        ctypes.c_int,                     # knn_k
-        ctypes.c_int,                     # if_flip
-        ctypes.POINTER(ctypes.c_int),     # out_order (n)
-        ctypes.POINTER(ctypes.c_int),     # out_reversal (n)
-    ]
-    lib.sort_curves.restype = None
-
-    _DLL = lib
-    return lib
 
 
 def sort_curves_native(curves, start_pt=rg.Point3d(0, 0, 0),
@@ -248,7 +219,7 @@ def sort_curves_native(curves, start_pt=rg.Point3d(0, 0, 0),
     if not curves:
         return [], []
 
-    lib = _load_dll()
+    lib = native_bridge.load_dll()
 
     # Marshal geometry -> flat double buffers (zero-copy views for ctypes).
     buf, n = misc.curves_to_endpoint_buffer(curves)
