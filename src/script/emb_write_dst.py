@@ -10,6 +10,7 @@ __update__ = "2026.03.16"
 import os
 import math
 import pyembroidery
+print(pyembroidery.__file__)
 
 from misc import unload_modules
 unload_modules("emb_constants")
@@ -26,6 +27,8 @@ name = name if 'name' in locals() else "output"                # type: ignore
 if export and in_dict:
     # 1. Initialize pyembroidery pattern
     pattern = pyembroidery.EmbPattern()
+    pattern.extras["name"] = name
+    pattern.add_stitch_absolute(pyembroidery.JUMP, 0, 0)
     
     # Extract lists from the input dictionary
     path_indices = in_dict["PATH_INDEX"]
@@ -137,8 +140,10 @@ if export and in_dict:
     pyembroidery.write(pattern, csv_path)
 
     print("Successfully exported: {}".format(dst_path))
+    print(pattern.get_metadata("name", "Untitled"))
 
 else:
+    
     if not export:
         print("Export skipped (export=False).")
     if not in_dict:

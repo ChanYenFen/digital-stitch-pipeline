@@ -1,5 +1,4 @@
 """
-Python 3 script for Rhino 8 Grasshopper
 Geometry Pre-processing for Embroidery & Winding.
 Adds caps(both ends of a path), ties(within a path), and jump-stitch logic for .DST export.
 """

@@ -162,8 +162,6 @@ if __name__ == "__main__":
         patternPts_nested=[]
   
         for i, (pts, type, width) in enumerate(zip(pts_nested, pattern_sorted, width_sorted)):
-            # print(i)
-
             myPa = PatternFilter(pts, width, 10.0)
             
             if type ==0:
